@@ -1,0 +1,72 @@
+---
+title: "DataDriven"
+author: "Perla Trevizo-Ramos"
+date: "9/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+source('functions.R')
+```
+
+# Loading Data 
+```{r}
+sub = read.csv('/home/trevi042/Desktop/Data Driven Competitions/Flu Shot Learning/Data/submission_format.csv')
+origTrainFeat = read.csv('/home/trevi042/Desktop/Data Driven Competitions/Flu Shot Learning/Data/test_set_features.csv')
+trainFeat = read.csv('/home/trevi042/Desktop/Data Driven Competitions/Flu Shot Learning/Data/training_set_features.csv')
+trainLabels = read.csv('/home/trevi042/Desktop/Data Driven Competitions/Flu Shot Learning/Data/training_set_labels.csv')
+testFeat = read.csv('/home/trevi042/Desktop/Data Driven Competitions/Flu Shot Learning/Data/test_set_features.csv')
+```
+
+# Checking Data 
+```{r}
+str(trainFeat)
+str(trainLabels)
+```
+
+# Dealing with NA's
+## NA's Anaylsis 
+```{r}
+na_per_col(trainFeat)
+
+trainFeat = origTrainFeat                     # 50% of the data remains
+
+trainFeat$health_insurance = NULL             # 86% of the data remains
+nrow(na.omit(trainFeat))/nrow(origTrainFeat)
+
+trainFeat$doctor_recc_h1n1 = NULL             # 86% of the data remains
+trainFeat$doctor_recc_seasonal = NULL
+nrow(na.omit(trainFeat))/nrow(origTrainFeat)
+
+#trainFeat$chronic_med_condition = NULL       # maybe add in the future
+#nrow(na.omit(trainFeat))/nrow(origTrainFeat)
+```
+
+## Removal of NA's implementation
+```{r}
+trainFeat = origTrainFeat
+
+trainFeat$respondent_id = NULL #stoping the data from training based on ID
+
+trainFeat$health_insurance = replace(trainFeat$health_insurance,
+                                     is.na(trainFeat$health_insurance),'NA')
+
+trainFeat$doctor_recc_h1n1 = replace(trainFeat$doctor_recc_h1n1,
+                                     is.na(trainFeat$doctor_recc_h1n1),'NA')
+
+trainFeat$doctor_recc_seasonal = replace(trainFeat$doctor_recc_seasonal,
+                                     is.na(trainFeat$doctor_recc_seasonal),'NA')
+#Note: changing Na to 
+trainFeat = na.omit(trainFeat)
+
+str(trainFeat)
+```
+
+Future work:
++ Need to turn all chr types and int types two factors, if needed.
++ Need to analysis and make visuals. 
+
+
+
